@@ -17,4 +17,12 @@ Hosted version http://www.mcgrathdesigns.com/todo
 
 Functionally testing ongoing on IE Chrome and safari ipad and iphone
 
-Functionally it is not fully working yet it is still being built.
+Functionally it is not fully working yet it is still being built.  List of missing features:
+
+1. Search not functioning.
+
+2. Drop down menu not working from top nav.
+
+3. Validation for Add Item modal.
+
+4. Upload image is not adding image ref to json.db.
