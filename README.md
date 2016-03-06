@@ -13,7 +13,6 @@ Second step is to set up fake db
 If you want to use live-server...
 run npm start
 
-Hosted version http://www.mcgrathdesigns.com/todo
 
 Functionally testing ongoing on IE Chrome and safari ipad and iphone
 
