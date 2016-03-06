@@ -32,7 +32,9 @@
     "qunit": "^0.9.0"
   },
   "devDependencies": {
+    "faker": "^3.0.1",
     "live-server": "^0.9.1",
+    "lodash": "^4.6.1",
     "node-sass": "^3.4.2",
     "nodemon": "^1.9.0"
   }

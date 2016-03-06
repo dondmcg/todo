@@ -1,0 +1,48 @@
+{
+  "items": [
+    {
+      "id": 0,
+      "title": "Grocery List",
+      "description": "Description",
+      "timestamp": "",
+      "status": [
+        "pending"
+      ],
+      "items": [
+        "buy eggs and butter",
+        "go to DMV",
+        "call Dad & Mom"
+      ]
+    },
+    {
+      "id": 1,
+      "title": "Stuff to do by Tuesday",
+      "description": "Description",
+      "timestamp": "",
+      "status": [
+        "complete"
+      ],
+      "items": [
+        "buy eggs and butter",
+        "go to DMV",
+        "call Dad & Mom"
+      ]
+    },
+    {
+      "item": "",
+      "items": [
+        "item 1"
+      ],
+      "addingItems": false,
+      "id": 2
+    },
+    {
+      "item": "",
+      "items": [
+        "item 2"
+      ],
+      "addingItems": false,
+      "id": 3
+    }
+  ]
+}

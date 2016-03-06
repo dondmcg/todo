@@ -5,85 +5,68 @@
         .module('todoapp')
         .controller('ListController', ListController);
 
-    ListController.$inject = ['$scope'];
+    ListController.$inject = ['$scope', '$log', 'ListService'];
 
     /* @ngInject */
-    function ListController($scope) {
+    function ListController($scope, $log, ListService) {
 
         var listCtrl = this;
 
         listCtrl.title = 'To Do Lists';
+        listCtrl.newList = {};
+        listCtrl.newList.item = '';
+        listCtrl.newList.items = [];
+        listCtrl.newList.addingItems = false;
+
         $scope.showModal = false;
 
-        $scope.toggleModal = function(){
+        listCtrl.toggleModal = function(){
             $scope.showModal = !$scope.showModal;
+            listCtrl.newItem = {};
         };
 
-        $scope.savelist = function(){
-            var listname = '',
-                listtags = [],
-                listtimestmp = '',
-                listdescript = '',
-                listitems = [];
-            console.log($scope);
-            // add new list to model
-            listCtrl.items.push({
-                'name': listname,
-                'tags': listtags,
-                'timestamp': listtimestmp,
-                'description': listdescript,
-                'items': listitems
-            });
+        listCtrl.revertAdding = function(){
+            listCtrl.newItem = null;
+        };
 
-
-
-           var item_num = listCtrl.items.length - 1;
-
-            for( var i=0; i<document.saveList.elements.length; i++ ) {
-                var fieldName = document.saveList.elements[i].name;
-                var fieldValue = document.saveList.elements[i].value;
-
-                switch(fieldName) {
-                    case 'name':
-                        listname = (fieldValue !== '')? fieldValue : '';
-                        listCtrl.items[item_num].name = listname;
-                        break;
-                    case 'description':
-                        listdescript = (fieldValue !== '')? fieldValue : '';
-                        listCtrl.items[item_num].description = listdescript;
-                        break;
-                    case 'tags':
-                        listtags = (fieldValue.length !== 0)? fieldValue : '';
-                        listCtrl.items[item_num].tags = listtags;
-                        break;
-                    case 'timestamp':
-                        listtimestmp = (fieldValue !== '')? fieldValue : '';
-                        listCtrl.items[item_num].items = listtimestmp;
-                        break;
-                    default:
-                    //do nothing
-                }
-                // populate list items array
-                var fieldNameStart = "item";
-                if (fieldName.substring(0, fieldNameStart.length) === fieldNameStart) {
-                    var listitem = (fieldValue !== '')? fieldValue : '';
-                    listCtrl.items[item_num].items.push(listitem);
-                };
+        listCtrl.add = function(form){
+            if(form.$invalid){
+                $window.alert("can't save: form not valid");
+                return false;
             }
-            $scope.showModal = !$scope.showModal;
-            console.log(listCtrl.items);
+
+            ListService.add(listCtrl.newList)
+                .then(function(response){
+                    listCtrl.items.push(listCtrl.newList);
+                    console.log(listCtrl.items);
+                    listCtrl.newList = null;
+                    $scope.showModal = !$scope.showModal;
+                })
+                .catch(function(response){
+                    $window.alert("problem saving");
+                    $scope.showModal = !$scope.showModal;
+                    $log.error(response.status);
+                });
 
         };
 
-        /*$scope.additem = function () {
-            $scope.itemplaceholder = 'List Item';
-            console.log(listCtrl.items);
-            var item_num = listCtrl.items.length + 1,
-                input = '<input type="text" placeholder="{{ itemplaceholder }}" ng-model="items[ item_num ].items[]">';
+        listCtrl.additem = function (e, form) {
 
-            console.log(listCtrl.items);
+            if (listCtrl.newList.addingItems){
+                listCtrl.saveItem(form);
+            }
+
+
+            listCtrl.newList.addingItems = !listCtrl.newList.addingItems;
+            e.innerHtml = (listCtrl.newList.addingItems)? 'Add' : 'Add Item to List';
         };
-*/
+
+        listCtrl.saveItem = function(form){
+            listCtrl.newList.items.push( listCtrl.newList.item );
+            listCtrl.newList.item = '';
+            console.log(listCtrl.newList.items);
+        };
+
         addEventListener('load', load, false);
 
         function load(){
@@ -93,6 +76,12 @@
             loader.className = 'fadeOut';
             loaderOvly.className = 'fadeOut';
             body.className = 'loaded';
+
+            if (window.FileReader) {
+                document.getElementById('filename').addEventListener('change', handleFileSelect, false);
+            } else {
+                alert('This browser does not support FileReader');
+            }
         };
 
         /*listCtrl.remove = function(index){
@@ -100,8 +89,8 @@
         };*/
 
         $scope.$watch('listCtrl.items',function(){
-            var total = listCtrl.items.length;
-            listCtrl.total = total;
+            //var total = listCtrl.items.length;
+            //listCtrl.total = total;
         }, true);
 
         activate();
@@ -109,6 +98,32 @@
         ////////////////
 
         function activate() {
+            ListService.list()
+                .then(function(response){
+                    listCtrl.items = response.data;
+                }).catch(function(response){
+                $log.error(response.status);
+            });
+
+
+        };
+
+        // handle the file uploader
+        function handleFileSelect(evt) {
+            var files = evt.target.files;
+            var f = files[0];
+            var reader = new FileReader();
+
+            reader.onload = (function(theFile) {
+                return function(e) {
+                    document.getElementById('image_list').innerHTML = ['<img src="', e.target.result,'" title="', theFile.name, '" width="50" />'].join('');
+                };
+            })(f);
+
+            reader.readAsDataURL(f);
+        };
+
+        /*function activate() {
             listCtrl.total = 0;
             listCtrl.items = [
                 {
@@ -141,7 +156,7 @@
                 }
             ];
 
-        }
+        }*/
 
     }
 

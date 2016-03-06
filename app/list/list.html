@@ -1,18 +1,96 @@
- <div class="row">
-     <h1>{{ listCtrl.title }}</h1>
-    <div class="col-md-4" ng-repeat="item in listCtrl.items">
-        <div class="panel panel-primary">
-            <div class="panel-heading">
-                <h3 class="panel-title">{{ item.name }}</h3>
-            </div>
-            <div class="panel-body">
-                 {{ item.description }}
-                <ul>
-                    <li ng-repeat="item in item.items">
-                        {{ item }}
-                    </li>
-                </ul>
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <!--<a class="navbar-brand" href="#">Brand</a>-->
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Lists<span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">List A</a></li>
+                        <li><a href="#">List B</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a class="" href="#">Create New Board</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <form class="navbar-form navbar-left" role="search">
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="Search">
+                </div>
+            </form>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="" ng-click="listCtrl.toggleModal()"><i class="glyphicon glyphicon-plus createList"></i></a></li>
+            </ul>
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+</nav>
+<div class="main">
+    <div class="container">
+        <div class="row">
+             <h1>{{ listCtrl.title }}</h1>
+            <div class="col-md-4" ng-repeat="item in listCtrl.items">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">{{ item.title }}</h3>
+                    </div>
+                    <div class="panel-body">
+                         {{ item.description }}
+                        <ul>
+                            <li ng-repeat="item in item.items">
+                                {{ item }}
+                            </li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
+         <modal title="Create a List" visible="showModal">
+             <form role="form" name="saveList" novalidate ng-submit="listCtrl.add(saveList)">
+                 <div class="form-group">
+                     <label for="name">Name of List</label>
+                     <input type="text" class="form-control" name="name" id="name" placeholder="Enter the title of the list" ng-model="listCtrl.newList.title" />
+                 </div>
+                 <div class="form-group">
+                     <label for="description">Description</label>
+                     <input type="text" class="form-control" name="description" id="description" placeholder="Description" ng-model="listCtrl.newList.description" />
+                 </div>
+                 <div class="form-group">
+                     <label>Upload Images</label>
+                     <input type="file" id="filename" name="filename" accept="image/gif, image/jpeg, image/png">
+                 </div>
+                 <div class="form-group">
+                     <button type="button" class="btn btn-default" ng-click="listCtrl.upload()">Add Image</button>
+                     <output id="image_list"></output>
+                 </div>
+                 <div class="form-group">
+                     <label>List item</label>
+                     <button type="button" class="btn btn-default pull-right" ng-class="{'btn btn-success pull-right': listCtrl.newList.addingItems, 'btn btn-default pull-right': !listCtrl.newList.addingItems}" ng-click="listCtrl.additem($event, saveList)">{{listCtrl.newList.addingItems && '  Add  ' || 'Add Item to List'}}</button>
+                 </div>
+                 <div class="form-group">
+                     <textarea name="addItemInput" rows="5" cols="60" placeholder="New Item" ng-model="listCtrl.newList.item" ng-if="listCtrl.newList.addingItems"></textarea>
+                     <ul>
+                         <li ng-repeat="item in listCtrl.newList.items">
+                             {{ item }}
+                         </li>
+                     </ul>
+                 </div>
+                 <div class="modal-footer">
+                     <button type="button" class="btn btn-default" ng-click="listCtrl.revertAdding()">Cancel</button>
+                     <button type="submit" class="btn btn-primary pull-right">Save List</button>
+                 </div>
+
+             </form>
+        </modal>
     </div>
 </div>
