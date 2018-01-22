@@ -25,10 +25,11 @@
   },
   "homepage": "",
   "dependencies": {
-    "jquery": "^2.1.3",
     "angular": "^1.4.9",
     "angular-route": "^1.4.9",
+    "angular-ui-router": "^0.2.18",
     "bootstrap": "^3.3.6",
+    "jquery": "^3.0.0",
     "qunit": "^0.9.0"
   },
   "devDependencies": {

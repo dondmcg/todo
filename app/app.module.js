@@ -1,8 +1,9 @@
-angular.module('todoapp',['ngRoute']);
+angular.module('todoapp',['ngRoute','firebase']);
 
-angular.module('todoapp').run(function($rootScope, $location){
+angular.module('todoapp')
+    .run(function($rootScope, $location){
 
-    $rootScope.isActive = function (viewLocation) {
-        return viewLocation === $location.path();
-    };
-});
+        $rootScope.isActive = function (viewLocation) {
+            return viewLocation === $location.path();
+        };
+    });

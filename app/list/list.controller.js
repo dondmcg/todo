@@ -13,12 +13,31 @@
         var listCtrl = this;
 
         listCtrl.title = 'To Do Lists';
+        listCtrl.items = ListService;
         listCtrl.newList = {};
-        listCtrl.newList.item = '';
+        listCtrl.listItem = '';
         listCtrl.newList.items = [];
-        listCtrl.newList.addingItems = false;
+        listCtrl.addingItems = false;
 
         $scope.showModal = false;
+
+       /*addEventListener('load', load, false);
+
+        function load(){
+            var body = document.getElementsByTagName("body")[0];
+             var loader = document.getElementById("loader");
+             var loaderOvly = document.getElementById("loader_overlay");
+             loader.className = 'fadeOut';
+             loaderOvly.className = 'fadeOut';
+             body.className = 'loaded';
+
+             if (window.FileReader) {
+             document.getElementById('filename').addEventListener('change', handleFileSelect, false);
+             } else {
+             alert('This browser does not support FileReader');
+             }
+
+        };*/
 
         listCtrl.toggleModal = function(){
             $scope.showModal = !$scope.showModal;
@@ -35,7 +54,13 @@
                 return false;
             }
 
-            ListService.add(listCtrl.newList)
+            //ADD TO FIREBASE
+            console.log(listCtrl.newList);
+            listCtrl.items.$add(listCtrl.newList);
+            listCtrl.newList = null;
+            $scope.showModal = !$scope.showModal;
+
+            /*ListService.add(listCtrl.newList)
                 .then(function(response){
                     listCtrl.items.push(listCtrl.newList);
                     console.log(listCtrl.items);
@@ -46,66 +71,86 @@
                     $window.alert("problem saving");
                     $scope.showModal = !$scope.showModal;
                     $log.error(response.status);
-                });
+                });*/
 
         };
 
         listCtrl.additem = function (e, form) {
 
-            if (listCtrl.newList.addingItems){
+            if (listCtrl.addingItems){
+                if(!listCtrl.listItem){
+                    alert('you must enter an item');
+                    return false;
+                }
                 listCtrl.saveItem(form);
             }
 
-
-            listCtrl.newList.addingItems = !listCtrl.newList.addingItems;
-            e.innerHtml = (listCtrl.newList.addingItems)? 'Add' : 'Add Item to List';
+            listCtrl.addingItems = !listCtrl.addingItems;
+            e.innerHtml = (listCtrl.addingItems)? 'Add' : 'Add Item to List';
         };
 
         listCtrl.saveItem = function(form){
-            listCtrl.newList.items.push( listCtrl.newList.item );
-            listCtrl.newList.item = '';
-            console.log(listCtrl.newList.items);
+            listCtrl.newList.items.push( listCtrl.listItem );
+            listCtrl.listItem = '';
         };
 
-        addEventListener('load', load, false);
-
-        function load(){
-            var body = document.getElementsByTagName("body")[0];
-            var loader = document.getElementById("loader");
-            var loaderOvly = document.getElementById("loader_overlay");
-            loader.className = 'fadeOut';
-            loaderOvly.className = 'fadeOut';
-            body.className = 'loaded';
-
-            if (window.FileReader) {
-                document.getElementById('filename').addEventListener('change', handleFileSelect, false);
-            } else {
-                alert('This browser does not support FileReader');
-            }
+        listCtrl.removeList = function(index){
+            //listCtrl.items.splice(index,1);
+            listCtrl.items.$remove(index);
         };
 
-        /*listCtrl.remove = function(index){
-            listCtrl.items.splice(index,1);
-        };*/
+        listCtrl.removeItem = function(indexList, indexItem){
+            //var id = listCtrl.items[indexList].$id;
+            console.log('vvv');
+            //console.log(listCtrl.items);
+            //console.log(indexList);
+            //console.log(id);
+            console.log(listCtrl.items[indexList]);
+            //console.log(listCtrl.items[indexList].items);
+            //console.log(indexItem);
+            console.log(listCtrl.items[indexList].items[indexItem]);
+            //console.log(indexList);
+            //console.log(listCtrl.items[indexList]);
+            //console.log(listCtrl.items[indexList].items);
+            //console.log(indexItem);
+            ///console.log(listCtrl.items[indexList].id);
+
+           // console.log(listCtrl.items[indexList].child(indexItem));
+            //listCtrl.child("items/" + id + "/items/").$remove(indexItem);
+            listCtrl.items[indexList].items[indexItem] = null;
+            listCtrl.items.$save();
+            //listCtrl.items[indexList].items.$remove(indexItem);
+            //listCtrl.items[indexList].items.splice(indexItem,1);
+        };
 
         $scope.$watch('listCtrl.items',function(){
             //var total = listCtrl.items.length;
             //listCtrl.total = total;
         }, true);
 
-        activate();
-
-        ////////////////
-
+        //activate();
         function activate() {
-            ListService.list()
-                .then(function(response){
-                    listCtrl.items = response.data;
-                }).catch(function(response){
-                $log.error(response.status);
-            });
+            var fbaseUrl = new Firebase('https://flickering-fire-936.firebaseio.com/items/');
 
+            listCtrl.items = $firebaseArray(fbaseUrl);
 
+            /*fbaseUrl.authWithPassword({
+                email    : "don@mcgrathdesigns.com",
+                password : "sundown"
+            }, function(error, authData) {
+                if (error) {
+                    console.log("Login Failed!", error);
+                } else {
+                    console.log("Authenticated successfully with payload:", authData);
+                }
+            });*/
+
+            //ListService.list();
+            //.then(function(response){
+                //listCtrl.items = response.data;
+            //}).catch(function(response){
+            //$log.error(response.status);
+        //});
         };
 
         // handle the file uploader

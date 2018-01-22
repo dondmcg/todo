@@ -27,22 +27,6 @@
         "go to DMV",
         "call Dad & Mom"
       ]
-    },
-    {
-      "item": "",
-      "items": [
-        "item 1"
-      ],
-      "addingItems": false,
-      "id": 2
-    },
-    {
-      "item": "",
-      "items": [
-        "item 2"
-      ],
-      "addingItems": false,
-      "id": 3
     }
   ]
 }
